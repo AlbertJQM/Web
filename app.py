@@ -99,5 +99,25 @@ def edit_task(id):
             return f"Error al editar la tarea: {e}"
     return render_template('edit_task.html', tarea=tarea)
 
+@app.route('/task/delete/<int:id>')
+def delete_task(id):
+    tarea = Tarea.query.get_or_404(id)
+    try:
+        db.session.delete(tarea)
+        db.session.commit()
+    except Exception as e:
+        return f"Error al eliminar la tarea: {e}"
+    return redirect(url_for('list_tasks'))
+
+@app.route('/task/complete/<int:id>', methods=['POST'])
+def complete_task(id):
+    tarea = Tarea.query.get_or_404(id)
+    try:
+        tarea.completada = not tarea.completada
+        db.session.commit()
+    except Exception as e:
+        return f"Error al completar la tarea: {e}"
+    return redirect(url_for('list_tasks'))
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5001)
