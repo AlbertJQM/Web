@@ -83,5 +83,21 @@ def create_task():
             return f"Error al crear la tarea: {e}"
     return render_template('create_task.html')
 
+@app.route('/task/edit/<int:id>', methods=['GET', 'POST'])
+def edit_task(id):
+    tarea = Tarea.query.get_or_404(id)
+    if request.method == 'POST':
+        tarea.titulo = request.form['titulo']
+        tarea.descripcion = request.form['descripcion']
+        tarea.fecha_vencimiento = datetime.strptime(request.form['fecha'], '%Y-%m-%d')
+        tarea.prioridad = request.form['prioridad']
+        tarea.completada = request.form.get('completada') == 'on'
+        try:        
+            db.session.commit()
+            return redirect(url_for('list_tasks'))
+        except Exception as e:
+            return f"Error al editar la tarea: {e}"
+    return render_template('edit_task.html', tarea=tarea)
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5001)
