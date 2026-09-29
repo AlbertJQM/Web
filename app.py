@@ -30,14 +30,16 @@ def login():
         if usuario and usuario.verificar_contrasena(contrasena):
             session["usuario_id"] = usuario.id
             session["usuario_nombre"] = usuario.nombre
+            flash('Inicio de sesión exitoso.', 'success')
             return redirect(url_for('list_tasks'))
         else:
-            return "Correo o contraseña incorrectos."
+            flash('Correo o contraseña incorrectos.', 'danger')
     return render_template('login.html')
 
 @app.route('/logout')
 def logout():
     session.clear()
+    flash('Has cerrado sesión exitosamente.', 'info')
     return redirect(url_for('home'))
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -47,12 +49,13 @@ def signup():
         correo = request.form['correo']
         contrasena = request.form['contrasena']
         if Usuario.query.filter_by(correo=correo).first():
-            return "El correo ya está registrado."
+            flash('El correo ya está registrado.', 'warning')
         else:
             nuevo_usuario = Usuario(nombre=nombre, correo=correo)
             nuevo_usuario.colocar_contrasena(contrasena)
             db.session.add(nuevo_usuario)
             db.session.commit()
+            flash('Usuario registrado exitosamente.', 'success')
             return redirect(url_for('login'))
     return render_template('signup.html')
 
@@ -60,6 +63,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if "usuario_id" not in session:
+            flash('Debes iniciar sesión para acceder a esta página.', 'warning')
             return redirect(url_for("login"))
         return f(*args, **kwargs)
     return decorated_function
