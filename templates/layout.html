@@ -63,8 +63,17 @@
                 <div class="container">
                     <span class="text-muted">© 2025 Microsoft Education Hub - ITDB</span>
                 </div>
-            </footer>    
+            </footer>
         </div>
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+                var toastList = toastElList.map(function (toastEl) {
+                    return new bootstrap.Toast(toastEl)
+                });
+                toastList.forEach(toast => toast.show());
+            });
+        </script>
     </body>
 </html>

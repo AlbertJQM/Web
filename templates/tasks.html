@@ -10,15 +10,35 @@
             Nueva Tarea
         </a>
     </div>
+
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                    {% for category, message in messages %}
+                    <div class="toast align-items-center text-bg-{{ category }} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-autohide="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                {{ message }}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
     <ul class="nav nav-tabs mb-4" id="taskTabs">
         <li class="nav-item">
-            <a class="nav-link active" href="#">Todas las tareas (3)</a>
+            <a class="nav-link {% if estado == 'todas' %} active {% endif %}" href="{{ url_for('list_tasks', estado='todas') }}">Todas las tareas ({{ total_tareas }})</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Pendientes (2)</a>
+            <a class="nav-link {% if estado == 'pendientes' %} active {% endif %}" href="{{ url_for('list_tasks', estado='pendientes') }}">Pendientes ({{ pendientes }})</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Completadas (0)</a>
+            <a class="nav-link {% if estado == 'completadas' %} active {% endif %}" href="{{ url_for('list_tasks', estado='completadas') }}">Completadas ({{ completadas }})</a>
         </li>
     </ul>
     <div class="row g-3">
@@ -74,7 +94,7 @@
                             </div>
                         </form>
                         <div class="col-lg-6">
-                            <a href="{{ url_for('delete_task', id=tarea.id) }}" class="btn btn-sm btn-outline-danger float-end">
+                            <a href="{{ url_for('delete_task', id=tarea.id) }}" class="btn btn-sm btn-outline-danger float-end" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarea?');">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                                     <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
